@@ -26,6 +26,17 @@ export const SETTINGS_CHANNELS = {
     GRANT_CSP_CONSENT: "grant-csp-consent",
     REVOKE_CSP_CONSENT: "revoke-csp-consent",
     GET_CSP_CONSENTS: "get-csp-consents",
+    SET_TOOL_CONNECTION: "set-tool-connection",
+    GET_TOOL_CONNECTION: "get-tool-connection",
+    REMOVE_TOOL_CONNECTION: "remove-tool-connection",
+    GET_ALL_TOOL_CONNECTIONS: "get-all-tool-connections",
+    SET_TOOL_SECONDARY_CONNECTION: "set-tool-secondary-connection",
+    GET_TOOL_SECONDARY_CONNECTION: "get-tool-secondary-connection",
+    REMOVE_TOOL_SECONDARY_CONNECTION: "remove-tool-secondary-connection",
+    GET_ALL_TOOL_SECONDARY_CONNECTIONS: "get-all-tool-secondary-connections",
+    ADD_LAST_USED_TOOL: "add-last-used-tool",
+    GET_LAST_USED_TOOLS: "get-last-used-tools",
+    CLEAR_LAST_USED_TOOLS: "clear-last-used-tools",
 } as const;
 
 // Connection-related IPC channels
@@ -34,9 +45,8 @@ export const CONNECTION_CHANNELS = {
     UPDATE_CONNECTION: "update-connection",
     DELETE_CONNECTION: "delete-connection",
     GET_CONNECTIONS: "get-connections",
+    GET_CONNECTION_BY_ID: "get-connection-by-id",
     SET_ACTIVE_CONNECTION: "set-active-connection",
-    GET_ACTIVE_CONNECTION: "get-active-connection",
-    DISCONNECT_CONNECTION: "disconnect-connection",
     TEST_CONNECTION: "test-connection",
     IS_TOKEN_EXPIRED: "is-connection-token-expired",
     REFRESH_TOKEN: "refresh-connection-token",
@@ -69,6 +79,7 @@ export const TOOL_WINDOW_CHANNELS = {
     CLOSE: "tool-window:close",
     GET_ACTIVE: "tool-window:get-active",
     GET_OPEN_TOOLS: "tool-window:get-open-tools",
+    UPDATE_TOOL_CONNECTION: "tool-window:update-tool-connection",
 } as const;
 
 // Terminal-related IPC channels
@@ -87,11 +98,15 @@ export const UTIL_CHANNELS = {
     SHOW_NOTIFICATION: "show-notification",
     COPY_TO_CLIPBOARD: "copy-to-clipboard",
     SAVE_FILE: "save-file",
+    SELECT_PATH: "select-path",
     GET_CURRENT_THEME: "get-current-theme",
     SHOW_LOADING: "show-loading",
     HIDE_LOADING: "hide-loading",
     OPEN_EXTERNAL: "open-external",
     GET_EVENT_HISTORY: "get-event-history",
+    SHOW_MODAL_WINDOW: "show-modal-window",
+    CLOSE_MODAL_WINDOW: "close-modal-window",
+    SEND_MODAL_MESSAGE: "send-modal-message",
 } as const;
 
 // Auto-update-related IPC channels
@@ -116,6 +131,10 @@ export const DATAVERSE_CHANNELS = {
     GET_ENTITY_RELATED_METADATA: "dataverse.getEntityRelatedMetadata",
     GET_SOLUTIONS: "dataverse.getSolutions",
     QUERY_DATA: "dataverse.queryData",
+    CREATE_MULTIPLE: "dataverse.createMultiple",
+    UPDATE_MULTIPLE: "dataverse.updateMultiple",
+    PUBLISH_CUSTOMIZATIONS: "dataverse.publishCustomizations",
+    GET_ENTITY_SET_NAME: "dataverse.getEntitySetName",
 } as const;
 
 // Event-related IPC channels (from main to renderer)
@@ -134,6 +153,16 @@ export const EVENT_CHANNELS = {
     TOKEN_EXPIRED: "token-expired",
     SHOW_LOADING_SCREEN: "show-loading-screen",
     HIDE_LOADING_SCREEN: "hide-loading-screen",
+    MODAL_WINDOW_OPENED: "modal-window:opened",
+    MODAL_WINDOW_CLOSED: "modal-window:closed",
+    MODAL_WINDOW_MESSAGE: "modal-window:message",
+} as const;
+
+// Internal BrowserWindow modal channels (modal content -> main process)
+export const MODAL_WINDOW_CHANNELS = {
+    CLOSE: "modal-window:close",
+    MESSAGE: "modal-window:event",
+    RENDERER_MESSAGE: "modal-window:renderer-message",
 } as const;
 
 // Type helper to extract channel names

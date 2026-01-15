@@ -6,10 +6,12 @@
  * Interface for an open tool instance
  */
 export interface OpenTool {
-    id: string;
+    instanceId: string; // Unique instance ID (e.g., "toolId-uuid")
+    toolId: string; // The base tool ID
     tool: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     isPinned: boolean;
-    connectionId: string | null;
+    connectionId: string | null; // Primary connection
+    secondaryConnectionId: string | null; // Secondary connection (for multi-connection tools)
 }
 
 /**
@@ -49,6 +51,8 @@ export interface SettingsState {
     theme?: string;
     autoUpdate?: boolean;
     showDebugMenu?: boolean;
+    deprecatedToolsVisibility?: string;
+    toolDisplayMode?: string;
     terminalFont?: string;
 }
 
@@ -57,41 +61,22 @@ export interface SettingsState {
  */
 export interface SessionData {
     openTools: Array<{
-        id: string;
+        instanceId: string;
+        toolId: string;
         isPinned: boolean;
         connectionId: string | null;
+        secondaryConnectionId: string | null;
     }>;
     activeToolId: string | null;
 }
 
 /**
- * Tool detail for marketplace display
+ * Tool detail for installed & marketplace display
  */
 export interface ToolDetail {
     id: string;
     name: string;
-    description: string;
-    authors?: string[];
-    category: string;
-    tags?: string[]; // deprecated, use categories in source mapping
     version: string;
-    iconUrl?: string;
-    downloadUrl?: string;
-    publishedAt?: string;
-    readmeUrl?: string;
-    downloads?: number;
-    rating?: number;
-    aum?: number;
-}
-
-/**
- * Sidebar tool representation
- */
-export interface SidebarTool {
-    id: string;
-    name: string;
-    version: string;
-    icon?: string;
     description?: string;
     hasUpdate?: boolean;
     latestVersion?: string;
@@ -99,5 +84,11 @@ export interface SidebarTool {
     categories?: string[];
     downloads?: number;
     rating?: number;
-    aum?: number;
+    mau?: number; // Monthly Active Users
+    iconUrl?: string;
+    readmeUrl?: string;
+    status?: "active" | "deprecated" | "archived"; // Tool lifecycle status
+    repository?: string;
+    website?: string;
+    createdAt?: string; // ISO date string from created_at field
 }

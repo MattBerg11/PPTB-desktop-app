@@ -5,6 +5,19 @@
 import { CspExceptions } from "./common";
 
 /**
+ * Tool features configuration
+ */
+export interface ToolFeatures {
+    /**
+     * Multi-connection support configuration
+     * - "required": Both primary and secondary connections are required
+     * - "optional": Primary connection is required, secondary is optional
+     * - "none": Single connection only (default behavior)
+     */
+    multiConnection?: "required" | "optional" | "none";
+}
+
+/**
  * Represents a tool that can be loaded into the ToolBox
  */
 export interface Tool {
@@ -12,8 +25,10 @@ export interface Tool {
     name: string;
     version: string;
     description: string;
+    publishedAt?: string;
+    createdAt?: string; // ISO date string from created_at field
     authors?: string[];
-    icon?: string;
+    iconUrl?: string;
     settings?: ToolSettings;
     localPath?: string; // For local development tools - absolute path to tool directory
     npmPackageName?: string; // For npm-installed tools - package name in node_modules
@@ -22,7 +37,12 @@ export interface Tool {
     license?: string;
     downloads?: number;
     rating?: number;
-    aum?: number;
+    mau?: number; // Monthly Active Users (unique machines per month)
+    readmeUrl?: string;
+    features?: ToolFeatures; // Tool features configuration
+    status?: "active" | "deprecated" | "archived"; // Tool lifecycle status
+    repository?: string;
+    website?: string;
 }
 
 /**
@@ -32,21 +52,25 @@ export interface ToolRegistryEntry {
     id: string;
     name: string;
     description: string;
-    author: string;
     authors?: string[]; // full list of contributors
     version: string;
-    icon?: string;
+    iconUrl?: string;
     downloadUrl: string;
+    readmeUrl?: string; // URL or relative path to README file
     checksum?: string;
     size?: number;
     publishedAt: string;
-    tags?: string[];
-    readme?: string; // URL or relative path to README file
+    createdAt?: string; // Supabase created_at timestamp
+    categories?: string[];
     cspExceptions?: CspExceptions; // CSP exceptions requested by the tool
     license?: string; // SPDX or license name
     downloads?: number; // analytics - total downloads
     rating?: number; // analytics - average rating
-    aum?: number; // analytics - active user months
+    mau?: number; // analytics - Monthly Active Users (unique machines per month)
+    features?: ToolFeatures; // Tool features configuration
+    status?: "active" | "deprecated" | "archived"; // Tool lifecycle status
+    repository?: string;
+    website?: string;
 }
 
 /**
@@ -69,7 +93,13 @@ export interface ToolManifest {
     license?: string;
     downloads?: number;
     rating?: number;
-    aum?: number;
+    mau?: number; // Monthly Active Users (unique machines per month)
+    features?: ToolFeatures; // Tool features configuration
+    status?: "active" | "deprecated" | "archived"; // Tool lifecycle status
+    repository?: string;
+    website?: string;
+    publishedAt?: string;
+    createdAt?: string;
 }
 
 /**
@@ -86,6 +116,9 @@ export interface ToolSettings {
 export interface ToolContext {
     toolId: string;
     connectionUrl: string | null;
+    connectionId?: string | null;
+    secondaryConnectionUrl?: string | null;
+    secondaryConnectionId?: string | null;
 }
 
 /**

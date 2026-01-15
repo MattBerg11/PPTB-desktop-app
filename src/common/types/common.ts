@@ -27,6 +27,52 @@ export interface NotificationOptions {
 }
 
 /**
+ * File dialog filter definition (mirrors Electron's FileFilter type)
+ */
+export interface FileDialogFilter {
+    name: string;
+    extensions: string[];
+}
+
+/**
+ * Options for selecting a file or folder using the system dialog
+ */
+export interface SelectPathOptions {
+    type?: "file" | "folder";
+    title?: string;
+    message?: string;
+    buttonLabel?: string;
+    defaultPath?: string;
+    filters?: FileDialogFilter[];
+}
+
+/**
+ * BrowserWindow-backed modal configuration
+ */
+export interface ModalWindowOptions {
+    id?: string;
+    html: string;
+    width: number;
+    height: number;
+    resizable?: boolean;
+}
+
+/**
+ * Payload emitted from BrowserWindow modal content via modalBridge
+ */
+export interface ModalWindowMessagePayload<TData = unknown> {
+    channel: string;
+    data?: TData;
+}
+
+/**
+ * Payload broadcast when a modal window closes
+ */
+export interface ModalWindowClosedPayload {
+    id?: string | null;
+}
+
+/**
  * Theme type
  */
 export type Theme = "light" | "dark" | "system";

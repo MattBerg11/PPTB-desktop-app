@@ -1,4 +1,5 @@
 import { BrowserWindow, ipcMain } from "electron";
+import * as path from "path";
 
 interface NotificationOptions {
     title: string;
@@ -56,7 +57,10 @@ export class NotificationWindowManager {
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
-                sandbox: true,
+                // Use a small preload script to expose a safe `window.electron` API
+                // Preload path resolves at runtime to the compiled JS in `dist/main`
+                sandbox: false,
+                preload: path.join(__dirname, "notificationPreload.js"),
             },
         });
 
@@ -119,6 +123,10 @@ export class NotificationWindowManager {
      * Setup IPC handlers for notifications
      */
     private setupIpcHandlers(): void {
+        // Remove existing handlers first to prevent duplicate registration errors
+        // This is necessary on macOS where the app doesn't quit when windows are closed
+        this.removeIpcHandlers();
+
         ipcMain.handle("notification:show", async (event, options: NotificationOptions) => {
             this.showNotification(options);
         });
@@ -139,6 +147,15 @@ export class NotificationWindowManager {
             }
             this.dismissNotification(index);
         });
+    }
+
+    /**
+     * Remove IPC handlers to allow clean re-registration
+     */
+    private removeIpcHandlers(): void {
+        ipcMain.removeHandler("notification:show");
+        ipcMain.removeAllListeners("notification:dismiss");
+        ipcMain.removeAllListeners("notification:action");
     }
 
     /**
@@ -366,16 +383,10 @@ export class NotificationWindowManager {
 <body>
     ${notificationsHTML}
     <script>
-        const { ipcRenderer } = require('electron');
-        
-        window.electron = {
-            dismissNotification: (index) => {
-                ipcRenderer.send('notification:dismiss', index);
-            },
-            actionClicked: (index, actionIndex) => {
-                ipcRenderer.send('notification:action', index, actionIndex);
-            }
-        };
+        // Preload exposes a safe window.electron API with:
+        //  - dismissNotification(index)
+        //  - actionClicked(index, actionIndex)
+        // The HTML buttons call those methods directly.
     </script>
 </body>
 </html>
@@ -386,6 +397,7 @@ export class NotificationWindowManager {
      * Cleanup
      */
     destroy(): void {
+        this.removeIpcHandlers();
         this.notificationWindow = null;
         this.notifications = [];
     }
